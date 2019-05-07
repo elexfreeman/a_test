@@ -9,8 +9,8 @@ import MainRequest from '../../System/MainRequest';
 /* базовый класс репозитория с инициализацией системных сервисов */
 export default class BaseR {
 
-    private db: any;
-    private errorSys: ErrorSys;
+    public db: any;
+    public errorSys: ErrorSys;
 
     constructor(req: MainRequest) {
         /* инициализируем системные сервисы */
