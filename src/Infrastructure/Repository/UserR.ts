@@ -2,8 +2,6 @@
 import BaseR from "./BaseR";
 import { UserE, UserSafeE } from "../Entity/UserE";
 
-// Глобальные сервисы
-import сoreDBSys from '../../System/CoreDBSys';
 
 export default class UserR extends BaseR {
 
@@ -27,14 +25,22 @@ export default class UserR extends BaseR {
     async getUserApikeyByLoginAndPass(login: string, password: string): Promise<string> {
         let resp: string;
 
-        let sql = `select * from users u
+        let sql = `select u.apikey from users u
         where u.login=:login and u.pass = :pass`;
+
+        /* ИЛИ через queryBuilder */
+        /* 
+        await this.db('users').where({
+            login: 'Test',
+            pass:  'User'
+            }).select('apikey') 
+        */
         let result;
         try {
-            result = (await сoreDBSys.raw(sql, {
+            result = await this.db.raw(sql, {
                 'login': login,
                 'pass': password
-            }));
+            });
             
             if ((result.rows) && (result.rowCount > 0)) {
                 resp = result.rows[0]['apikey'];
@@ -44,12 +50,7 @@ export default class UserR extends BaseR {
 
         } catch (e) {
             this.errorSys.error('get_user', 'Не удалось получить пользователя');
-        }
-       
-       
-
-
-
+        }    
         return resp;
     }
 

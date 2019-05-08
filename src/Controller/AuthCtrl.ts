@@ -1,10 +1,8 @@
 import * as express from 'express';
+import  BaseController from './BaseController';
+
 
 // Подключение системных классов
-
-import { ResponseSys } from '../System/ResponseSys';
-import { UserSys } from '../System/UserSys';
-import { ErrorSys } from '../System/ErrorSys';
 import MainRequest from '../System/MainRequest';
 
 // Подключение системных моделей
@@ -13,24 +11,17 @@ import { UserM } from '../Model/UserM';
 const router = express.Router();
 
 /**
- * API для Админки
- * Редактирование и управление пользователями, а так-же их правами
+ * Авторизация пользователя 
  */
-class AuthCtrl {
-
-    public responseSys: ResponseSys;
-    public userM: UserM;
-    public errorSys: ErrorSys;
-
+class AuthCtrl extends BaseController {
+   
+    public userM: UserM;  
     /**
      * Конструктор
      * нужен для асинхронной инициализации   
      */
     public static async init(req: MainRequest, res: any): Promise<AuthCtrl> {
-        let self = new AuthCtrl();
-        // Инициализация системных сервисов       
-        self.errorSys = req.sys.errorSys;
-        self.responseSys = req.sys.responseSys;
+        let self = new AuthCtrl(req);       
 
         //==================================================
         // Инициализация бизнес моделей
