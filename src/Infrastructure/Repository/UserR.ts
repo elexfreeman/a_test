@@ -1,10 +1,10 @@
-import BaseR from "./BaseR";
-import { UserE, UserToken } from "../Entity/UserE";
+import BaseR from './BaseR';
+import { UserE, UserToken, UserSafeE } from '../Entity/UserE';
 
 /**
  * Репозиторий пользователя
  */
-export default class UserR extends BaseR {   
+export default class UserR extends BaseR {
 
     /* получение токена юзера по его логину и паролю */
     async getUserTokenByLoginAndPass(login: string, password: string): Promise<string> {
@@ -28,13 +28,13 @@ export default class UserR extends BaseR {
             pass:  'User'
             }).select('apikey') 
         */
-       
+
         try {
             result = await this.db.raw(sql, {
                 'login': login,
                 'pass': password
             });
-         
+
             if ((result.rows) && (result.rowCount > 0)) {
                 resp = result.rows[0]['token'];
             } else {
@@ -43,7 +43,7 @@ export default class UserR extends BaseR {
 
         } catch (e) {
             console.log(e);
-            this.errorSys.error('get_user', 'Не удалось получить пользователя');
+            this.errorSys.error('getUserTokenByLoginAndPass', 'Не удалось получить пользователя');
         }
         return resp;
     }
@@ -78,7 +78,7 @@ export default class UserR extends BaseR {
         /* удаляем ненужные поля */
         delete data.date;
         delete data.id;
-        
+
         try {
             resp = await this.db('user_token')
                 .returning('id')
@@ -88,6 +88,44 @@ export default class UserR extends BaseR {
         }
         /* возвращаем нулевой элемент массивы с последним id */
         return resp[0];
+    }
+
+    /**
+     * получение юзера по токену
+     */
+    async getUserByToken(token: string): Promise<UserSafeE> {
+        let resp: UserSafeE;       
+        let result: any;       
+        let sql = `with v_user_id as (SELECT user_id FROM user_token WHERE token=:token LIMIT 1)
+        SELECT * FROM (
+        
+        
+        SELECT * FROM user_token ut WHERE 
+        ut.user_id=(SELECT * FROM v_user_id)
+        
+        ORDER BY ut.DATE DESC LIMIT 1
+        ) a
+        WHERE 
+        token=:token   
+        `;     
+
+        try {
+            result = await this.db.raw(sql, {
+                'token': token                
+            });
+
+            if ((result.rows) && (result.rowCount > 0)) {
+                resp = result.rows[0];
+            } else {
+                throw 'error';
+            }
+
+        } catch (e) {
+            console.log(e);
+            this.errorSys.error('getUserByToken', 'Не удалось получить пользователя');
+        }
+        
+        return resp;
     }
 
 }

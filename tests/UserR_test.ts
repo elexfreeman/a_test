@@ -21,7 +21,7 @@ req = {
     body: null,
     method: '',
     sys: {
-        apikey: '',
+        token: '',
         errorSys: null,
         userSys: null,
         responseSys: null,
@@ -50,6 +50,9 @@ const run = async () => {
             assert.isAbove(user_id, 0);
 
         }).timeout(1000);
+
+
+    
 
         it('Добавление токена пользователя', async () => {
             let user_id = await userR.addUser({
@@ -92,6 +95,16 @@ const run = async () => {
             let token = await userR.getUserTokenByLoginAndPass('john', md5('a123343423234'));
 
             assert.isAbove(token.length, 0);
+
+        }).timeout(1000);
+
+
+
+        it('Получение юзера по токену', async () => {
+
+            let user = await userR.getUserByToken('some exist token');           
+            
+            assert.isAbove(user.user_id, 0);
 
         }).timeout(1000);
 

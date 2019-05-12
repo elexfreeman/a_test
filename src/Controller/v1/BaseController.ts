@@ -1,7 +1,7 @@
-import { ResponseSys } from "../../System/ResponseSys";
-import { UserSys } from "../../System/UserSys";
-import { ErrorSys } from "../../System/ErrorSys";
-import MainRequest from "../../System/MainRequest";
+import { ResponseSys } from '../../System/ResponseSys';
+import { UserSys } from '../../System/UserSys';
+import { ErrorSys } from '../../System/ErrorSys';
+import MainRequest from '../../System/MainRequest';
 
 /**
  * Базовый контролер

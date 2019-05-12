@@ -5,22 +5,20 @@ import { UserSys } from '../UserSys';
 export default async function AuthSysMiddleware(request: MainRequest, response: any, next: any) {
 
     /* токен авторизации */
-    request.sys.apikey = '';
-    if (request.headers.apikey) {
-        request.sys.apikey = request.headers.apikey;
+    request.sys.token = '';
+    if (request.headers.token) {
+        request.sys.token = request.headers.token;
     }
 
     /* юзерь не авторизован */
-    request.sys.bAuth = false;
+    request.sys.isAuth = false;
     const userSys = new UserSys(request);
 
-    if (await userSys.isAuth()) {
-        await userSys.init();
-        /* проставляем аторизацию */
-        request.sys.bAuth = true;
-
-    }
+    await userSys.init();
     request.sys.userSys = userSys;
+    
+    /* проставляем аторизацию */
+    request.sys.isAuth = request.sys.userSys.isAuth;   
 
     next();
 }

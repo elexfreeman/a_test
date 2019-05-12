@@ -7,8 +7,8 @@ export default interface MainRequest {
     body: any;
     method: string;
     sys: {
-        apikey: string, 
-        bAuth: boolean, /* флаг авторизации */
+        token: string, 
+        isAuth: boolean, /* флаг авторизации */
        
         errorSys: ErrorSys,
         userSys: UserSys,
