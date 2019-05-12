@@ -3,10 +3,10 @@ import  BaseController from './BaseController';
 
 
 // Подключение системных классов
-import MainRequest from '../System/MainRequest';
+import MainRequest from '../../System/MainRequest';
 
 // Подключение системных моделей
-import { UserM } from '../Model/UserM';
+import { UserM } from '../../Model/v1/UserM';
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ class AuthCtrl extends BaseController {
 /**
  * авторизация пользователя по логину и паролю
  */
-router.post('/auth', async (req: MainRequest, res: any, next: any) => {
+router.post('/v1/auth', async (req: MainRequest, res: any, next: any) => {
     let self = await AuthCtrl.init(req, res);
 
     res.send(

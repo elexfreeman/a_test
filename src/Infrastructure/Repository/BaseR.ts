@@ -14,7 +14,9 @@ export default class BaseR {
 
     constructor(req: MainRequest) {
         /* инициализируем системные сервисы */
+        /* базадынных */
         this.db = сoreDBSys;
+        /* сборщик ошибок */
         this.errorSys = req.sys.errorSys;
     }
 }

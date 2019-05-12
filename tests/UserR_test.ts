@@ -1,10 +1,15 @@
+/* 
+    Тест UserR
+*/
+
+
 process.env.TS_NODE_PROJECT = './tsconfig.json';
 // process.env.TS_CONFIG_PATHS = 'true';
 const mocha = require('ts-mocha');
 const assert = require('chai').assert;
 const should = require('chai').should();
 const expect = require('chai').expect;
-
+import * as md5 from "md5";
 import MainRequest from '../src/System/MainRequest';
 import { ErrorSys } from '../src/System/ErrorSys';
 import UserR from "../src/Infrastructure/Repository/UserR";
@@ -31,13 +36,64 @@ const run = async () => {
 
     await describe('Тестирование репозитория', async () => {
 
+      
+
+        it('Добавление пользователя', async () => {
+
+            let user_id = await userR.addUser({
+                user_id: 0,
+                username: 'john',
+                login: 'john',
+                pass: md5('a123343423234')
+            });           
+
+            assert.isAbove(user_id, 0);
+
+        }).timeout(1000);
+
+        it('Добавление токена пользователя', async () => {
+            let user_id = await userR.addUser({
+                user_id: 0,
+                username: 'john',
+                login: 'john',
+                pass: md5('a123343423234')
+            });
+
+            let id = await userR.addUserToken({
+                id: 0,
+                token: '12312qweqweqwe',
+                user_id: user_id,
+                date: ''
+            });           
+
+            assert.isAbove(id, 0);
+
+        }).timeout(1000);
+
+
         it('Получение токена по логину и паролю', async () => {
 
-            let apikey = await userR.getUserApikeyByLoginAndPass('login', 'pass');
+            /* добавляем пользователя */
+            let user_id = await userR.addUser({
+                user_id: 0,
+                username: 'john',
+                login: 'john',
+                pass: md5('a123343423234')
+            });
 
-            assert.isAbove(apikey.length, 0);
+            /* добавляем ему токен */
+            let id = await userR.addUserToken({
+                id: 0,
+                token: '12312qweqweqwe',
+                user_id: user_id,
+                date: ''
+            });       
 
-        }).timeout(5000);
+            let token = await userR.getUserTokenByLoginAndPass('john', md5('a123343423234'));
+
+            assert.isAbove(token.length, 0);
+
+        }).timeout(1000);
 
 
     });

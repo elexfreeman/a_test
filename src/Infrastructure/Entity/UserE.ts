@@ -1,15 +1,20 @@
 /* юзер с логином и пролем */
 export interface UserE {
     user_id: number;
-    username: string;
-    apikey: string;
+    username: string;  
     login: string;
-    password: string;
+    pass: string;
 }
 
 /* юзер без логина и пароля */
 export interface UserSafeE {
     user_id: number;
-    username: string;
-    apikey: string; 
+    username: string;    
+}
+
+export interface UserToken {
+    id: number;
+    token: string;    
+    user_id: number;    
+    date: string;    
 }

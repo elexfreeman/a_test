@@ -1,32 +1,25 @@
-
 import BaseR from "./BaseR";
-import { UserE, UserSafeE } from "../Entity/UserE";
+import { UserE, UserToken } from "../Entity/UserE";
 
-
-export default class UserR extends BaseR {
-
-    /* инфа об пользователе по его токену */
-    async getUserInfoByApiKey(apikey: string): Promise<UserE> {
-        let resp: UserE;
-
-
-        return resp;
-    }
-
-    /* список пользователей */
-    async getUserList(offset: string, limit: string): Promise<UserSafeE[]> {
-        let resp: UserSafeE[];
-
-
-        return resp;
-    }
+/**
+ * Репозиторий пользователя
+ */
+export default class UserR extends BaseR {   
 
     /* получение токена юзера по его логину и паролю */
-    async getUserApikeyByLoginAndPass(login: string, password: string): Promise<string> {
+    async getUserTokenByLoginAndPass(login: string, password: string): Promise<string> {
         let resp: string;
+        let result: any;
 
-        let sql = `select u.apikey from users u
-        where u.login=:login and u.pass = :pass`;
+        let sql = `SELECT ut.token FROM users u
+
+        JOIN user_token ut
+        ON ut.user_id=u.user_id
+        
+        WHERE u.login= :login AND pass= :pass
+        
+        ORDER BY ut.DATE desc
+        LIMIT 1`;
 
         /* ИЛИ через queryBuilder */
         /* 
@@ -35,23 +28,66 @@ export default class UserR extends BaseR {
             pass:  'User'
             }).select('apikey') 
         */
-        let result;
+       
         try {
             result = await this.db.raw(sql, {
                 'login': login,
                 'pass': password
             });
-            
+         
             if ((result.rows) && (result.rowCount > 0)) {
-                resp = result.rows[0]['apikey'];
+                resp = result.rows[0]['token'];
             } else {
                 throw 'error';
             }
 
         } catch (e) {
+            console.log(e);
             this.errorSys.error('get_user', 'Не удалось получить пользователя');
-        }    
+        }
         return resp;
+    }
+
+    /* добавление пользователя */
+    async addUser(user: UserE) {
+
+        let data = user;
+        let resp = [0];
+
+        /* убираем user_id */
+        delete data.user_id;
+
+        try {
+            resp = await this.db('users')
+                .returning('user_id')
+                .insert(data);
+        } catch (e) {
+            this.errorSys.error('addUser', 'Не удалось добавить пользователя');
+        }
+        /* возвращаем нулевой элемент массивы с последним id */
+        return resp[0];
+    }
+
+    /* добавление токена пользователя */
+    async addUserToken(userToken: UserToken) {
+        /* убираем user_id */
+        let data = userToken;
+        let resp = [0];
+
+
+        /* удаляем ненужные поля */
+        delete data.date;
+        delete data.id;
+        
+        try {
+            resp = await this.db('user_token')
+                .returning('id')
+                .insert(userToken);
+        } catch (e) {
+            this.errorSys.error('addUserToken', 'Не удалось добавить токен пользователя');
+        }
+        /* возвращаем нулевой элемент массивы с последним id */
+        return resp[0];
     }
 
 }
