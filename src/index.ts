@@ -12,18 +12,18 @@ app.options('*', cors());
 
 
 /* LEGO ошибок */
-import ErrorSysMiddleware from './system/Middleware/ErrorSysMiddleware'
+import ErrorSysMiddleware from './System/Middleware/ErrorSysMiddleware'
 app.use(ErrorSysMiddleware);
 
 /* Переводим пост в JSON */
-import RequestSysMiddleware from './system/Middleware/RequestSysMiddleware'
+import RequestSysMiddleware from './System/Middleware/RequestSysMiddleware'
 app.use(RequestSysMiddleware);
 
-import ResponseSysMiddleware from './system/Middleware/ResponseSysMiddleware'
+import ResponseSysMiddleware from './System/Middleware/ResponseSysMiddleware'
 app.use(ResponseSysMiddleware);
 
 /* проверка авторизации на уровне приложения */
-import AuthSysMiddleware from './system/Middleware/AuthSysMiddleware'
+import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware'
 app.use(AuthSysMiddleware);
 
 
@@ -31,20 +31,6 @@ import * as TestCtrl from './Controller/TestCtrl';
 app.use(TestCtrl.router);
 
 
-import * as IndexController from './Controller/IndexController';
-app.use(IndexController.router);
-
-import * as AdminUserController from './Controller/AdminUserController';
-app.use(AdminUserController.router);
-
-import * as UpdateCatalogController from './Controller/UpdateCatalogController';
-app.use(UpdateCatalogController.router);
-
-import * as UserApiController from './Controller/UserApiController';
-app.use(UserApiController.router);
-
-import * as StatementController from './Controller/StatementController';
-app.use(StatementController.router);
 
 
 

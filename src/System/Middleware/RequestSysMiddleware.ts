@@ -1,8 +1,7 @@
 import MainRequest from '../MainRequest';
-import { ErrorSys } from '../ErrorSys';
 
 
-/* Переводи пост в JSON */
+/* Переводит пост в JSON */
 export default function RequestSysMiddleware(request: MainRequest, response: any, next: any) {
 
     let errorSys = request.sys.errorSys;

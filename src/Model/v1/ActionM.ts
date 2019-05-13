@@ -1,25 +1,78 @@
-import * as md5 from 'md5';
-
 import BaseModel from './BaseModel';
 
 // Системные сервисы
 import MainRequest from '../../System/MainRequest';
 
 // Классы репозиториев
-import UserR from '../../Infrastructure/Repository/UserR';
+import ActionR from '../../Infrastructure/Repository/ActionR';
+import {ActionE} from '../../Infrastructure/Entity/ActionE';
 
 
 /**
- * Бизнес модель пользователя  
+ * Бизнес модель события  
  */
-export default class UserM extends BaseModel {
+export default class ActionM extends BaseModel {
 
-    /* репозиторий пользователя */
-    public userR: UserR; 
+    /* репозиторий события */
+    public actionR: ActionR;
 
     constructor(req: MainRequest) {
-        super(req);      
-        this.userR = new UserR(req);
+        super(req);
+        this.actionR = new ActionR(req);
+    }
+
+    /**
+     * 
+     */
+    public async list(): Promise<ActionE[]> {
+        await super.list();
+        let limit = 10;
+        let offset = 0;
+        let resp: ActionE[];
+
+        try {
+            if (this.req.body['limit']) {
+                limit = parseInt(this.req.body['limit']);
+            }
+
+            if (this.req.body['offset']) {
+                offset = parseInt(this.req.body['offset']);
+            }
+
+            resp = await this.actionR.list(limit, offset);
+        } catch (e) {
+            this.errorSys.error('ActionM_list', e);
+        }
+
+        return resp;
+
+    }
+
+    /**
+     * 
+     */
+    public async getById(): Promise<ActionE> {
+        let resp: ActionE;
+        let action_id: number;
+        try {    
+
+            if (this.req.body['action_id']) {
+                action_id = parseInt(this.req.body['action_id']);
+            }
+            resp = await this.actionR.getById(action_id);
+
+        } catch (e) {
+            this.errorSys.error('ActionM_getById', e);
+        }
+        return resp;
+    }
+
+    public async create() {
+
+    }
+
+    public async update() {
+
     }
 
 

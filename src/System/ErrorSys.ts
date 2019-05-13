@@ -5,24 +5,23 @@ import MainRequest from './MainRequest';
 /**
  * Системный сервис обработки ошибок
  */
-export class ErrorSys
-{
-	private ok:boolean; // Глобальный статус выполнения
-	private env:string; // тип окружения
-	private ifDevMode:boolean; // Флаг режима разработки
-	private errorList:any; // Ошибки
-	private errorDeclareList:any; // список декларированных ошибок
-	private devWarningList:any; // Пердупреждения пользователю
-	private warningList:any; // Пердупреждения пользователю
-	private devNoticeList:any; // Уведомления для разработки и тестирования
-	private noticeList:any; // Уведомления для пользователя
-	private devLogList:any; // Массив для логирования тестовой информации
+export class ErrorSys {
+	private ok: boolean; // Глобальный статус выполнения
+	private env: string; // тип окружения
+	private ifDevMode: boolean; // Флаг режима разработки
+	private errorList: any; // Ошибки
+	private errorDeclareList: any; // список декларированных ошибок
+	private devWarningList: any; // Пердупреждения пользователю
+	private warningList: any; // Пердупреждения пользователю
+	private devNoticeList: any; // Уведомления для разработки и тестирования
+	private noticeList: any; // Уведомления для пользователя
+	private devLogList: any; // Массив для логирования тестовой информации
 
-	constructor(req:MainRequest){
+	constructor(req: MainRequest) {
 
 		this.ok = true;
 		this.env = configSys.getEnvType();
-		if( this.env == 'local' || this.env == 'dev' ){
+		if (this.env == 'local' || this.env == 'dev') {
 			this.ifDevMode = true;
 		} else {
 			this.ifDevMode = false;
@@ -42,7 +41,7 @@ export class ErrorSys
 	 *
 	 * @return boolean
 	 */
-	public isOk(): boolean{
+	public isOk(): boolean {
 		return this.ok;
 	}
 
@@ -51,7 +50,7 @@ export class ErrorSys
 	 *
 	 * @return boolean
 	 */
-	public isDev(): boolean{
+	public isDev(): boolean {
 		return this.ifDevMode;
 	}
 
@@ -60,7 +59,7 @@ export class ErrorSys
 	 *
 	 * @param keyError
 	 */
-	public decl(keyError:string, infoError:string = null){
+	public decl(keyError: string, infoError: string = null) {
 		this.errorDeclareList[keyError] = infoError;
 	}
 
@@ -69,8 +68,8 @@ export class ErrorSys
 	 *
 	 * @param keyErrorList
 	 */
-	public declare(keyErrorList:string[]){
-		for(let i = 0; i < keyErrorList.length; i++){
+	public declare(keyErrorList: string[]) {
+		for (let i = 0; i < keyErrorList.length; i++) {
 			this.errorDeclareList[keyErrorList[i]] = null;
 		}
 	}
@@ -80,7 +79,7 @@ export class ErrorSys
 	 *
 	 * @param keyErrorList
 	 */
-	public declareEx(keyErrorList:{[key:string]:string}){
+	public declareEx(keyErrorList: { [key: string]: string }) {
 
 		Object.assign(this.errorDeclareList, keyErrorList);
 	}
@@ -92,16 +91,16 @@ export class ErrorSys
 	 * @param string sError - сообщение
 	 * @return void
 	 */
-	public error(kError:string, sError:string ): void{
+	public error(kError: string, sError: string): void {
 		this.ok = false; // При любой одной ошибке приложение отдает отрицательный ответ
 		this.errorList[kError] = sError;
 
-		if( this.ifDevMode ){
-			this.devLogList.push('E:['+kError+'] - '+sError);
-			console.log('E:['+kError+'] - '+sError);
+		if (this.ifDevMode) {
+			this.devLogList.push('E:[' + kError + '] - ' + sError);
+			console.log('E:[' + kError + '] - ' + sError);
 
 			// Проверка на декларацию ошибок
-			if( !(kError in this.errorDeclareList) ){
+			if (!(kError in this.errorDeclareList)) {
 				this.devWarning(kError, 'Отсутствует декларация ошибки');
 			}
 		}
@@ -115,17 +114,17 @@ export class ErrorSys
 	 * @param kError // Ключ ошибки - для тестирования
 	 * @param sError // Сообщение об ошибке
 	 */
-	public errorEx(e:any, kError:string, sError:string ): void{
+	public errorEx(e: any, kError: string, sError: string): void {
 		this.ok = false; // При любой одной ошибке приложение отдает отрицательный ответ
 		this.errorList[kError] = sError;
 
-		if( this.ifDevMode ){
-			this.devLogList.push('E:['+kError+'] - '+sError);
-			console.log('E:['+kError+'] - '+sError);
-			console.log('Ошибка - ' + e.name , e.message, e.stack);
+		if (this.ifDevMode) {
+			this.devLogList.push('E:[' + kError + '] - ' + sError);
+			console.log('E:[' + kError + '] - ' + sError);
+			console.log('Ошибка - ' + e.name, e.message, e.stack);
 
 			// Проверка на декларацию ошибок
-			if( !(kError in this.errorDeclareList) ){
+			if (!(kError in this.errorDeclareList)) {
 				this.devWarning(kError, 'Отсутствует декларация ошибки');
 			}
 		}
@@ -138,7 +137,7 @@ export class ErrorSys
 	 * @param string sNotice - сообщение
 	 * @return void
 	 */
-	public notice( kNotice:string, sNotice:string): void{
+	public notice(kNotice: string, sNotice: string): void {
 		this.noticeList[kNotice] = sNotice;
 	}
 
@@ -149,11 +148,11 @@ export class ErrorSys
 	 * @param string sNotice - сообщение
 	 * @return void
 	 */
-	public devNotice(kNotice:string,  sNotice:string): void{
-		if( this.ifDevMode ){
+	public devNotice(kNotice: string, sNotice: string): void {
+		if (this.ifDevMode) {
 			this.devNoticeList[kNotice] = sNotice;
-			this.devLogList.push('N:['+kNotice+'] - '+sNotice);
-			console.log('N:['+kNotice+'] - '+sNotice);
+			this.devLogList.push('N:[' + kNotice + '] - ' + sNotice);
+			console.log('N:[' + kNotice + '] - ' + sNotice);
 		}
 	}
 
@@ -164,7 +163,7 @@ export class ErrorSys
 	 * @param string sWarning - сообщение
 	 * @return void
 	 */
-	public warning( kWarning:string, sWarning:string): void{
+	public warning(kWarning: string, sWarning: string): void {
 		this.warningList[kWarning] = sWarning;
 	}
 
@@ -176,11 +175,11 @@ export class ErrorSys
 	 * @param string sWarning - сообщение
 	 * @return void
 	 */
-	public devWarning( kWarning:string, sWarning:string): void{
-		if( this.ifDevMode ){
+	public devWarning(kWarning: string, sWarning: string): void {
+		if (this.ifDevMode) {
 			this.devWarningList[kWarning] = sWarning;
-			this.devLogList.push('W:['+kWarning+'] - '+sWarning);
-			console.log('W:['+kWarning+'] - '+sWarning);
+			this.devLogList.push('W:[' + kWarning + '] - ' + sWarning);
+			console.log('W:[' + kWarning + '] - ' + sWarning);
 		}
 	}
 
@@ -191,16 +190,16 @@ export class ErrorSys
 	 *
 	 * @return array|null - возвращаются ошибки (key, val)
 	 */
-	public getErrors(): {}{
+	public getErrors(): {} {
 		return this.errorList;
 	}
 
 	/**
 	 * Получить все декларации для DEV режима
 	 */
-	public getDevDeclare(): {}{
-		for( let k in this.errorDeclareList ){
-			if( this.errorList[k] && !this.errorDeclareList[k] ){
+	public getDevDeclare(): {} {
+		for (let k in this.errorDeclareList) {
+			if (this.errorList[k] && !this.errorDeclareList[k]) {
 				this.errorDeclareList[k] = this.errorList[k];
 			}
 		}
@@ -213,7 +212,7 @@ export class ErrorSys
 	 *
 	 * @return array|null - возвращаются предупреждения (key, val)
 	 */
-	public getDevWarning(): {}{
+	public getDevWarning(): {} {
 		return this.devWarningList;
 	}
 
@@ -222,7 +221,7 @@ export class ErrorSys
 	 *
 	 * @return array|null - возвращаются предупреждения (key, val)
 	 */
-	public getWarning(): {}{
+	public getWarning(): {} {
 
 		return this.warningList;
 	}
@@ -232,7 +231,7 @@ export class ErrorSys
 	 *
 	 * @return array|null - возвращаются уведомления (key, val)
 	 */
-	public getDevNotice(): {}{
+	public getDevNotice(): {} {
 
 		return this.devNoticeList;
 	}
@@ -242,7 +241,7 @@ export class ErrorSys
 	 *
 	 * @return array|null - возвращаются уведомления (key, val)
 	 */
-	public getNotice(): {}{
+	public getNotice(): {} {
 		return this.noticeList;
 	}
 
@@ -251,7 +250,7 @@ export class ErrorSys
 	 *
 	 * @return array|null - возвращаются уведомления (key, val)
 	 */
-	public getDevLog(): string[]{
+	public getDevLog(): string[] {
 		return this.devLogList;
 	}
 

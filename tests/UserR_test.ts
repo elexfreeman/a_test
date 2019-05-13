@@ -25,7 +25,7 @@ req = {
         errorSys: null,
         userSys: null,
         responseSys: null,
-        bAuth: false
+        isAuth: false
     }
 }
 
