@@ -1,11 +1,14 @@
 import BaseModel from './BaseModel';
 
+import * as moment from 'moment';
+
 // Системные сервисы
 import MainRequest from '../../System/MainRequest';
 
 // Классы репозиториев
 import ActionR from '../../Infrastructure/Repository/ActionR';
-import {ActionE} from '../../Infrastructure/Entity/ActionE';
+import { ActionE } from '../../Infrastructure/Entity/ActionE';
+
 
 
 /**
@@ -54,7 +57,7 @@ export default class ActionM extends BaseModel {
     public async getById(): Promise<ActionE> {
         let resp: ActionE;
         let action_id: number;
-        try {    
+        try {
 
             if (this.req.body['action_id']) {
                 action_id = parseInt(this.req.body['action_id']);
@@ -67,74 +70,97 @@ export default class ActionM extends BaseModel {
         return resp;
     }
 
+    /**
+     * 
+     */
     public async create() {
+        let resp: number;
+        let action: ActionE;
+        try {
 
+            if (this.req.body['action']) {
+                action = this.req.body['action'];
+            }
+
+            resp = await this.actionR.create(action);
+
+        } catch (e) {
+            this.errorSys.error('ActionM_create', e);
+        }
+        return resp;
     }
 
+
+    private validate(action: ActionE): boolean {
+        let resp: boolean = true;
+
+        try {
+            /* валидация id */
+            if (action['action_id']) {
+                /* может прийти в виде строки число */
+                if ((parseInt(action['action_id'] + '') == 0) || (isNaN(parseInt(action['action_id'] + '')))) {
+                    this.errorSys.error('action_id', 'Пустое action_id');
+                    resp = false;
+                }
+            } else {
+                this.errorSys.error('action_id', 'Пустое action_id');
+                resp = false;
+            }
+
+            /* валидация имени */
+            if (action['name']) {
+                if (action['name'].length < 3) {
+                    this.errorSys.error('name', 'Длинна имени меньше 3');
+                    resp = false;
+                }
+            } else {
+                this.errorSys.error('name', 'Пустое имя');
+                resp = false;
+            }
+
+            /* валидация даты начала */
+            /* if (!action['start_date']) {
+                this.errorSys.error('start_date', 'Пустое start_date');
+               resp = false;
+            } */
+        } catch (e) {
+            resp = false;
+        }
+
+        return resp;
+    }
+
+    /**
+     * 
+     */
     public async update() {
-
-    }
-
-
-    /* выдает ключ по логину паролю */
-    public async getUserTokenByLoginAndPass(body: {
-        login: string;
-        pass: string;
-    }): Promise<string> {
-
-        let token;
-        let ok = true;
-
-        // Декларирование ошибок
-        this.errorSys.declare([
-            'login', /* если нет логина */
-            'pass', /* если нет пароля */
-            'reg', /* если нету такого юзера  */
-        ]);
+        let resp: boolean;
 
         try {
 
-            if (!body) {
-                this.errorSys.error('login', 'Не заполнено поле логин');
-                this.errorSys.error('pass', 'Не заполнено поле пароль');
-                throw "erro body";
+            if (!this.req.body['action']) {
+                this.errorSys.error('empty_action', 'Пустое событие');
+                throw "error";
             }
 
-            /* если нету телефона */
-            if (!body.login) {
-                this.errorSys.error('login', 'Не заполнено поле логин');
-                ok = false;
-            }
-            /* если нету sms */
-            if (!body.pass) {
-                this.errorSys.error('pass', 'Не заполнено поле пароль');
-                ok = false;
+            if (!this.req.body['action']['action_id']) {
+                this.errorSys.error('action_id', 'Пустое action_id');
+                throw "error";
             }
 
-            if (ok) {
-                /* пытаемся получить token */
-                token = await this.userR.getUserTokenByLoginAndPass(body.login, md5(body.pass));
+            /* запускаем валидацию */
+            if(!this.validate(this.req.body['action'])){
+                throw "error";
             }
 
-
-            /* если нету такого юзера  */
-            if (!token) {
-                this.errorSys.error('reg', 'Такой пользователь отсутствует');
-                ok = false;
-            }
-
-            if (!ok) {
-                throw "erro body";
-            }
+            /* все ок обновляем */
+            resp = await this.actionR.update(this.req.body['action']);
 
         } catch (e) {
-            /* что-то не так */
-            /* console.log(e) */
-
+            this.errorSys.error('ActionM_create', e);
         }
-
-        return token;
-
+        return resp;
     }
+
 
 }
