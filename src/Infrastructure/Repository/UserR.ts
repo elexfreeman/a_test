@@ -35,14 +35,15 @@ export default class UserR extends BaseR {
                 'pass': password
             });
 
+          
+
             if ((result.rows) && (result.rowCount > 0)) {
                 resp = result.rows[0]['token'];
             } else {
                 throw 'error';
             }
 
-        } catch (e) {
-            console.log(e);
+        } catch (e) {            
             this.errorSys.error('getUserTokenByLoginAndPass', 'Не удалось получить пользователя');
         }
         return resp;

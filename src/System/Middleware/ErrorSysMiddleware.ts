@@ -5,11 +5,11 @@ import {ErrorSys} from '../ErrorSys';
 export default function ErrorSysMiddleware(request: MainRequest, response: any, next: any) {
 
     request.sys = {
-        apikey: '',
+        token: '',
         errorSys: null,
         userSys: null,
         responseSys: null,
-        bAuth: false
+        isAuth: false
     }
 
     request.sys.errorSys = new ErrorSys(request);

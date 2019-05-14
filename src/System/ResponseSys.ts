@@ -44,19 +44,16 @@ export class ResponseSys {
 			'msg': sMsg,
 		};
 
-		if (this.bDevMode) { // Выводит информацию для разработчиков и тестрировщиков
-			out['dev_warning'] = this.errorSys.getDevWarning();
-			out['dev_notice'] = this.errorSys.getDevNotice();
-			out['dev_declare'] = this.errorSys.getDevDeclare();
-			out['dev_log'] = this.errorSys.getDevLog();
-		}
+		// if (this.bDevMode) { // Выводит информацию для разработчиков и тестрировщиков
+		// 	out['dev_warning'] = this.errorSys.getDevWarning();
+		// 	out['dev_notice'] = this.errorSys.getDevNotice();
+		// 	out['dev_declare'] = this.errorSys.getDevDeclare();
+		// 	out['dev_log'] = this.errorSys.getDevLog();
+		// }
 
-		if (this.errorSys.isOk()) {
-			out['data'] = data;
-		} else {
-			out['data'] = null;
-			out['msg'] = 'Что то пошло не так - обратитесь к администратору';
-		}
+
+		out['data'] = data;
+
 
 		return out;
 	}

@@ -27,8 +27,8 @@ import AuthSysMiddleware from './System/Middleware/AuthSysMiddleware'
 app.use(AuthSysMiddleware);
 
 
-import * as TestCtrl from './Controller/TestCtrl';
-app.use(TestCtrl.router);
+import * as AuthCtrl from './Controller/v1/AuthCtrl';
+app.use(AuthCtrl.router);
 
 
 

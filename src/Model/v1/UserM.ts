@@ -61,6 +61,7 @@ export default class UserM extends BaseModel {
             if (ok) {
                 /* пытаемся получить token */
                 token = await this.userR.getUserTokenByLoginAndPass(body.login, md5(body.pass));
+                console.log(token);
             }
 
 
@@ -76,7 +77,7 @@ export default class UserM extends BaseModel {
 
         } catch (e) {
             /* что-то не так */
-            /* console.log(e) */
+             console.log(e) ;
 
         }
 

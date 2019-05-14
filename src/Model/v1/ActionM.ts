@@ -1,6 +1,5 @@
 import BaseModel from './BaseModel';
 
-import * as moment from 'moment';
 
 // Системные сервисы
 import MainRequest from '../../System/MainRequest';
@@ -42,7 +41,7 @@ export default class ActionM extends BaseModel {
                 offset = parseInt(this.req.body['offset']);
             }
 
-            resp = await this.actionR.list(limit, offset);
+            resp = await this.actionR.list(offset, limit);
         } catch (e) {
             this.errorSys.error('ActionM_list', e);
         }
@@ -70,27 +69,9 @@ export default class ActionM extends BaseModel {
         return resp;
     }
 
-    /**
-     * 
-     */
-    public async create() {
-        let resp: number;
-        let action: ActionE;
-        try {
-
-            if (this.req.body['action']) {
-                action = this.req.body['action'];
-            }
-
-            resp = await this.actionR.create(action);
-
-        } catch (e) {
-            this.errorSys.error('ActionM_create', e);
-        }
-        return resp;
-    }
 
 
+    /* валидирование */
     private validate(action: ActionE): boolean {
         let resp: boolean = true;
 
@@ -133,6 +114,32 @@ export default class ActionM extends BaseModel {
     /**
      * 
      */
+    public async create() {
+        let resp: number;
+        let action: ActionE;
+        try {
+
+            if (this.req.body['action']) {
+                action = this.req.body['action'];
+            }
+
+            /* запускаем валидацию */
+            if (!this.validate(this.req.body['action'])) {
+                throw "error";
+            }
+
+            resp = await this.actionR.create(action);
+
+        } catch (e) {
+            this.errorSys.error('ActionM_create', e);
+        }
+        return resp;
+    }
+
+
+    /**
+     * 
+     */
     public async update() {
         let resp: boolean;
 
@@ -149,7 +156,7 @@ export default class ActionM extends BaseModel {
             }
 
             /* запускаем валидацию */
-            if(!this.validate(this.req.body['action'])){
+            if (!this.validate(this.req.body['action'])) {
                 throw "error";
             }
 

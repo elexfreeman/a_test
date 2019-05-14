@@ -12,7 +12,7 @@ export default class ActionR extends BaseR {
      * @param limit 
      * @param offset 
      */
-    async list(limit: number, offset: number): Promise<ActionE[]> {
+    async list(offset: number, limit: number): Promise<ActionE[]> {
         let resp: ActionE[];
         let result: any;
 
@@ -83,6 +83,7 @@ export default class ActionR extends BaseR {
                 .returning('action_id')
                 .insert(data);
         } catch (e) {
+            
             this.errorSys.error('ActionR_create', 'Не удалось добавить событие');
         }
         /* возвращаем нулевой элемент массива с последним id */
@@ -98,11 +99,12 @@ export default class ActionR extends BaseR {
         let ok = true;       
 
         try {
-            await this.db('action')
+            await this.db('actions')
             .where('action_id', '=', action.action_id)
             .update(action);
 
         } catch (e) {
+            console.log(e);
             ok = false;
             this.errorSys.error('ActionR_update', 'Не удалось обновить событие');
         }

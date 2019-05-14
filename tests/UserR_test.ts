@@ -38,18 +38,18 @@ const run = async () => {
 
       
 
-        it('Добавление пользователя', async () => {
+        // it('Добавление пользователя', async () => {
 
-            let user_id = await userR.addUser({
-                user_id: 0,
-                username: 'john',
-                login: 'john',
-                pass: md5('a123343423234')
-            });           
+        //     let user_id = await userR.addUser({
+        //         user_id: 0,
+        //         username: 'john',
+        //         login: 'john',
+        //         pass: md5('a123343423234')
+        //     });           
 
-            assert.isAbove(user_id, 0);
+        //     assert.isAbove(user_id, 0);
 
-        }).timeout(1000);
+        // }).timeout(1000);
 
 
     
@@ -74,29 +74,29 @@ const run = async () => {
         }).timeout(1000);
 
 
-        it('Получение токена по логину и паролю', async () => {
+        // it('Получение токена по логину и паролю', async () => {
 
-            /* добавляем пользователя */
-            let user_id = await userR.addUser({
-                user_id: 0,
-                username: 'john',
-                login: 'john',
-                pass: md5('a123343423234')
-            });
+        //     /* добавляем пользователя */
+        //     let user_id = await userR.addUser({
+        //         user_id: 0,
+        //         username: 'john',
+        //         login: 'john',
+        //         pass: md5('a123343423234')
+        //     });
 
-            /* добавляем ему токен */
-            let id = await userR.addUserToken({
-                id: 0,
-                token: '12312qweqweqwe',
-                user_id: user_id,
-                date: ''
-            });       
+        //     /* добавляем ему токен */
+        //     let id = await userR.addUserToken({
+        //         id: 0,
+        //         token: '12312qweqweqwe',
+        //         user_id: user_id,
+        //         date: ''
+        //     });       
 
-            let token = await userR.getUserTokenByLoginAndPass('john', md5('a123343423234'));
+        //     let token = await userR.getUserTokenByLoginAndPass('john', md5('a123343423234'));
 
-            assert.isAbove(token.length, 0);
+        //     assert.isAbove(token.length, 0);
 
-        }).timeout(1000);
+        // }).timeout(1000);
 
 
 

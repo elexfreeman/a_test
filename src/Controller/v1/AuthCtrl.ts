@@ -41,7 +41,7 @@ router.post('/v1/auth', async (req: MainRequest, res: any, next: any) => {
     let self = await AuthCtrl.init(req, res);
 
     res.send(
-        self.responseSys.response(await self.userM.getApiKeyByPhoneAndSms(req.body), 'проверка авторизации')
+        self.responseSys.response(await self.userM.getUserTokenByLoginAndPass(req.body), 'проверка авторизации')
     );
 
 });
