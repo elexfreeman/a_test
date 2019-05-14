@@ -56,8 +56,7 @@ export class UserSys {
 			userInfo = await this.userR.getUserByToken(this.token);
 
 			if (!userInfo) {				
-				this.isAuth = false;
-				this.errorSys.error('get_user_info_in_auth', 'Не возможно получить данные пользователя при авторизации');
+				this.isAuth = false;				
 			} else {
 				this.userInfo = userInfo;
 				this.userId = userInfo['user_id'];

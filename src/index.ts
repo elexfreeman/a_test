@@ -31,6 +31,10 @@ import * as AuthCtrl from './Controller/v1/AuthCtrl';
 app.use(AuthCtrl.router);
 
 
+import * as ActionCtrl from './Controller/v1/ActionCtrl';
+app.use(ActionCtrl.router);
+
+
 
 
 

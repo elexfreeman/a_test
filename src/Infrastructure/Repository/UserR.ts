@@ -122,8 +122,8 @@ export default class UserR extends BaseR {
             }
 
         } catch (e) {
-            console.log(e);
-            this.errorSys.error('getUserByToken', 'Не удалось получить пользователя');
+           /*  console.log(e);
+            this.errorSys.error('getUserByToken', 'Не удалось получить пользователя'); */
         }
         
         return resp;

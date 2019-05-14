@@ -33,6 +33,11 @@ export default class ActionM extends BaseModel {
         let resp: ActionE[];
 
         try {
+            if (!this.req.sys.isAuth) {
+                this.errorSys.error('auth', 'нет доступа');
+                throw "auth";
+            }
+
             if (this.req.body['limit']) {
                 limit = parseInt(this.req.body['limit']);
             }
@@ -57,6 +62,10 @@ export default class ActionM extends BaseModel {
         let resp: ActionE;
         let action_id: number;
         try {
+            if (!this.req.sys.isAuth) {
+                this.errorSys.error('auth', 'нет доступа');
+                throw "auth";
+            }
 
             if (this.req.body['action_id']) {
                 action_id = parseInt(this.req.body['action_id']);
@@ -74,19 +83,13 @@ export default class ActionM extends BaseModel {
     /* валидирование */
     private validate(action: ActionE): boolean {
         let resp: boolean = true;
+        
 
         try {
-            /* валидация id */
-            if (action['action_id']) {
-                /* может прийти в виде строки число */
-                if ((parseInt(action['action_id'] + '') == 0) || (isNaN(parseInt(action['action_id'] + '')))) {
-                    this.errorSys.error('action_id', 'Пустое action_id');
-                    resp = false;
-                }
-            } else {
-                this.errorSys.error('action_id', 'Пустое action_id');
-                resp = false;
-            }
+            if (!this.req.sys.isAuth) {
+                this.errorSys.error('auth', 'нет доступа');
+                throw "auth";
+            }            
 
             /* валидация имени */
             if (action['name']) {
@@ -99,12 +102,8 @@ export default class ActionM extends BaseModel {
                 resp = false;
             }
 
-            /* валидация даты начала */
-            /* if (!action['start_date']) {
-                this.errorSys.error('start_date', 'Пустое start_date');
-               resp = false;
-            } */
         } catch (e) {
+            this.errorSys.error('validate ', e);
             resp = false;
         }
 
@@ -119,13 +118,18 @@ export default class ActionM extends BaseModel {
         let action: ActionE;
         try {
 
-            if (this.req.body['action']) {
-                action = this.req.body['action'];
+            if (!this.req.sys.isAuth) {
+                this.errorSys.error('auth', 'нет доступа');
+                throw "auth";
+            }
+
+            if (this.req.body) {
+                action = this.req.body;
             }
 
             /* запускаем валидацию */
-            if (!this.validate(this.req.body['action'])) {
-                throw "error";
+            if (!this.validate(this.req.body)) {
+                throw "validate error";
             }
 
             resp = await this.actionR.create(action);
@@ -145,23 +149,28 @@ export default class ActionM extends BaseModel {
 
         try {
 
-            if (!this.req.body['action']) {
+            if (!this.req.sys.isAuth) {
+                this.errorSys.error('auth', 'нет доступа');
+                throw "auth";
+            }
+
+            if (!this.req.body) {
                 this.errorSys.error('empty_action', 'Пустое событие');
                 throw "error";
             }
 
-            if (!this.req.body['action']['action_id']) {
+            if (!this.req.body['action_id']) {
                 this.errorSys.error('action_id', 'Пустое action_id');
                 throw "error";
             }
 
             /* запускаем валидацию */
-            if (!this.validate(this.req.body['action'])) {
+            if (!this.validate(this.req.body)) {
                 throw "error";
             }
 
             /* все ок обновляем */
-            resp = await this.actionR.update(this.req.body['action']);
+            resp = await this.actionR.update(this.req.body);
 
         } catch (e) {
             this.errorSys.error('ActionM_create', e);
